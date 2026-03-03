@@ -1,0 +1,16 @@
+sku,name,category,color,materials,style_tags,occasion_tags,season_tags,body_type_fit,skin_tone_palette,price_eur
+TOP001,White linen button-down,top,white,linen,"preppy,minimalist","work,casual","spring,summer",all,all,35
+TOP002,Black fitted turtleneck,top,black,cotton,"minimalist,streetwear","casual,date","autumn,winter","hourglass,rectangle,pear",all,29
+TOP003,Boho embroidered peasant blouse,top,cream,cotton,"boho,romantic","casual,brunch","spring,summer","apple,rectangle,pear","light,wheatish",42
+BOT001,High-waist straight jeans,bottom,blue,denim,"casual,streetwear","casual,travel",all,"pear,rectangle,hourglass",all,49
+BOT002,A-line midi skirt,bottom,navy,polyester,"preppy,classic","work,date","spring,autumn","pear,apple,rectangle",all,39
+BOT003,Wide-leg tailored trousers,bottom,beige,wool blend,"classic,minimalist","work,formal","autumn,winter","apple,rectangle","dark,wheatish",59
+DRS001,Wrap dress (solid emerald),dress,emerald,viscose,"romantic,classic","date,evening,wedding_guest","spring,autumn","hourglass,pear,apple","dark,wheatish",75
+OUT001,Camel trench coat,outerwear,camel,cotton blend,"classic,minimalist","work,travel","spring,autumn",all,all,120
+OUT002,Leather biker jacket,outerwear,black,leather,"streetwear,edgy","casual,date","autumn,winter","rectangle,hourglass",all,160
+SHO001,White sneakers,shoes,white,synthetic,"casual,streetwear,minimalist","casual,travel",all,all,all,55
+SHO002,Nude block heels,shoes,nude,synthetic,"classic,romantic","work,date,wedding_guest",all,all,"light,wheatish",69
+SHO003,Black ankle boots,shoes,black,leather,"classic,edgy","casual,work,date","autumn,winter",all,all,89
+ACC001,Gold hoop earrings,accessory,gold,metal,"classic,romantic",all,all,all,"dark,wheatish",15
+ACC002,Structured tote bag,accessory,black,leather,"classic,preppy,minimalist","work,travel",all,all,all,85
+ACC003,Colorful silk scarf,accessory,multicolor,silk,"boho,classic","work,travel,brunch","spring,autumn",all,"light,wheatish",25
