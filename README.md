@@ -80,4 +80,3 @@ GEMINI_MODEL="models/gemini-1.5-flash"
 
 ---
 
-Author: Kayla Do
