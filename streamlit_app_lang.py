@@ -37,7 +37,6 @@ st.markdown(
         color: {TEXT};
       }}
 
-      /* ---------- FIX: make label text readable (black) ---------- */
       /* Streamlit widget labels */
       div[data-testid="stWidgetLabel"] > label {{
         color: {TEXT} !important;
@@ -91,6 +90,13 @@ st.markdown(
         color: white !important;
       }}
 
+      /* ==========================
+         FIX #2: Button text WHITE
+         ========================== */
+      .stButton > button * {{
+        color: #ffffff !important;
+      }}
+
       /* ---------- Inputs (keep modern rounded look) ---------- */
       div[data-baseweb="select"] > div {{
         border-radius: 14px !important;
@@ -107,6 +113,29 @@ st.markdown(
         color: #ffffff !important;
       }}
 
+      /* ==========================
+         FIX #1: Dropdown text WHITE
+         - opened dropdown list
+         - closed selected value
+         ========================== */
+
+      /* Open dropdown list */
+      div[data-baseweb="popover"] * {{
+        color: #ffffff !important;
+      }}
+      div[role="listbox"] div[role="option"],
+      div[role="listbox"] div[role="option"] * {{
+        color: #ffffff !important;
+      }}
+
+      /* Closed selectbox selected value */
+      div[data-baseweb="select"] > div span,
+      div[data-baseweb="select"] > div div,
+      div[data-baseweb="select"] span,
+      div[data-baseweb="select"] div {{
+        color: #ffffff !important;
+      }}
+
       /* Remove Streamlit chrome */
       #MainMenu {{visibility: hidden;}}
       footer {{visibility: hidden;}}
@@ -115,6 +144,49 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+# --------- Emoji + Title Case formatting (UI only) ----------
+BODY_EMOJI = {
+    "hourglass": "⏳",
+    "pear": "🍐",
+    "apple": "🍎",
+    "rectangle": "▭",
+    "inverted_triangle": "🔻",
+}
+SKIN_EMOJI = {
+    "fair": "🌸",
+    "light": "🌸",
+    "wheatish": "🌾",
+    "medium": "🌾",
+    "tan": "🌞",
+    "dark": "🌙",
+    "deep": "🌙",
+}
+STYLE_EMOJI = {
+    "boho": "✨",
+    "minimal": "🖤",
+    "classic": "👑",
+    "chic": "💅",
+    "street": "🧢",
+    "workwear": "💼",
+    "romantic": "🎀",
+}
+OCCASION_EMOJI = {
+    "work": "💼",
+    "casual": "👟",
+    "date": "💘",
+    "brunch": "🥐",
+    "evening": "🌙",
+    "wedding_guest": "💒",
+    "travel": "✈️",
+    "formal": "🎩",
+}
+
+def pretty_label(x: str, emoji_map: dict) -> str:
+    s = str(x)
+    emoji = emoji_map.get(s, "✨")
+    text = s.replace("_", " ").title()
+    return f"{emoji} {text}"
 
 # --------- Sidebar: intro + provider ----------
 with st.sidebar:
@@ -171,16 +243,32 @@ with st.container():
 
     c1, c2, c3, c4, c5 = st.columns([1, 1, 1, 1, 1])
     with c1:
-        body_type = st.selectbox("Body type", BODY_TYPES, index=0)
+        body_type = st.selectbox(
+            "Body type",
+            BODY_TYPES,
+            index=0,
+            format_func=lambda x: pretty_label(x, BODY_EMOJI),
+        )
     with c2:
-        skin_tone = st.selectbox("Skin tone", SKIN_TONES, index=1)
+        skin_tone = st.selectbox(
+            "Skin tone",
+            SKIN_TONES,
+            index=1,
+            format_func=lambda x: pretty_label(x, SKIN_EMOJI),
+        )
     with c3:
-        style_type = st.selectbox("Preferred style", STYLE_TYPES, index=0)
+        style_type = st.selectbox(
+            "Preferred style",
+            STYLE_TYPES,
+            index=0,
+            format_func=lambda x: pretty_label(x, STYLE_EMOJI),
+        )
     with c4:
         occasion = st.selectbox(
             "Occasion",
             ["work", "casual", "date", "brunch", "evening", "wedding_guest", "travel", "formal"],
             index=0,
+            format_func=lambda x: pretty_label(x, OCCASION_EMOJI),
         )
     with c5:
         budget_eur = st.number_input("Budget (€)", min_value=30, max_value=500, value=150, step=10)
