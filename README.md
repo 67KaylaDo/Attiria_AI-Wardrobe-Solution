@@ -38,7 +38,7 @@ GenAI_project_lang/
 └── README.md
 
 ---
-## Website: https://github.com/67KaylaDo/Attiria_AI-Wardrobe-Solution
+## Website: https://attiria-ai-wardrobe-solution.streamlit.app/
 
 ## Run Locally
 
