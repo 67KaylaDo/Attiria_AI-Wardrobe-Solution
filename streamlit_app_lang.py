@@ -25,7 +25,7 @@ st.set_page_config(
 
 # --------- UI mode state (DO NOT rely on browser theme) ----------
 if "ui_mode" not in st.session_state:
-    st.session_state["ui_mode"] = "dark"  # default
+    st.session_state["ui_mode"] = "light"  # default
 MODE = st.session_state["ui_mode"]
 
 # --------- Brand styling ----------
