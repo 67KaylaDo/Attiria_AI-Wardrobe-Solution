@@ -20,7 +20,13 @@ st.set_page_config(
     page_title="Attiria – GenAI Stylist Demo (LangChain)",
     page_icon="👗",
     layout="wide",
+    initial_sidebar_state="expanded",  # ✅ sidebar starts open and can be reopened
 )
+
+# --------- UI mode state (DO NOT rely on browser theme) ----------
+if "ui_mode" not in st.session_state:
+    st.session_state["ui_mode"] = "dark"  # default
+MODE = st.session_state["ui_mode"]
 
 # --------- Brand styling ----------
 BG = "#FAF1E8"
@@ -28,118 +34,204 @@ PRIMARY = "#D00F47"
 ACCENT = "#AC2156"
 TEXT = "#1F1A1C"  # black-ish
 
+# ---- Mode-specific tokens (colors only; content/layout unchanged) ----
+if MODE == "dark":
+    APP_BG = "#0E0B14"
+    PANEL_BG = "rgba(24, 18, 34, 0.78)"
+    PANEL_BORDER = "rgba(255,255,255,0.10)"
+    TEXT_MAIN = "#F6F2FF"
+    TEXT_MUTED = "rgba(246,242,255,0.70)"
+
+    INPUT_BG = "rgba(255,255,255,0.06)"
+    INPUT_TEXT = "#FFFFFF"
+    PLACEHOLDER = "rgba(255,255,255,0.60)"
+
+    POPOVER_BG = "rgba(18, 14, 26, 0.98)"
+    POPOVER_TEXT = "#FFFFFF"
+
+    ACCENT_PINK = "#D00F47"
+    ACCENT_PURPLE = "#B56BFF"
+else:
+    APP_BG = BG
+    PANEL_BG = "rgba(255, 255, 255, 0.78)"
+    PANEL_BORDER = "rgba(0,0,0,0.06)"
+    TEXT_MAIN = TEXT
+    TEXT_MUTED = "rgba(31,26,28,0.68)"
+
+    INPUT_BG = "rgba(31,26,28,0.88)"
+    INPUT_TEXT = "#FFFFFF"
+    PLACEHOLDER = "rgba(255,255,255,0.70)"
+
+    POPOVER_BG = "rgba(18,18,20,0.95)"
+    POPOVER_TEXT = "#FFFFFF"
+
+    ACCENT_PINK = PRIMARY
+    ACCENT_PURPLE = ACCENT
+
+# --------- CSS ----------
 st.markdown(
     f"""
     <style>
-      /* App background + base text */
       .stApp {{
-        background-color: {BG};
-        color: {TEXT};
+        background-color: {APP_BG};
+        color: {TEXT_MAIN};
       }}
 
-      /* Streamlit widget labels */
       div[data-testid="stWidgetLabel"] > label {{
-        color: {TEXT} !important;
+        color: {TEXT_MAIN} !important;
         font-weight: 650 !important;
       }}
 
-      /* Headings */
       h1, h2, h3, h4, h5, h6 {{
-        color: {TEXT} !important;
+        color: {TEXT_MAIN} !important;
       }}
 
-      /* Regular text */
       p, span, div {{
-        color: {TEXT};
+        color: {TEXT_MAIN};
       }}
 
-      /* Captions / help text slightly muted but still visible */
       .attiria-muted {{
-        color: rgba(31,26,28,0.68) !important;
+        color: {TEXT_MUTED} !important;
       }}
 
-      /* ---------- Cards ---------- */
       .attiria-card {{
         padding: 18px 18px;
         border-radius: 18px;
-        background: rgba(255, 255, 255, 0.78);
-        border: 1px solid rgba(0,0,0,0.06);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+        background: {PANEL_BG};
+        border: 1px solid {PANEL_BORDER};
+        box-shadow: 0 10px 30px rgba(0,0,0,0.18);
       }}
 
-      /* ---------- Sidebar ---------- */
       section[data-testid="stSidebar"] {{
-        background-color: rgba(255,255,255,0.65);
-        border-right: 1px solid rgba(0,0,0,0.06);
+        background-color: {PANEL_BG};
+        border-right: 1px solid {PANEL_BORDER};
       }}
       section[data-testid="stSidebar"] * {{
-        color: {TEXT} !important;
+        color: {TEXT_MAIN} !important;
       }}
 
-      /* ---------- Buttons ---------- */
       .stButton > button {{
-        background-color: {PRIMARY};
-        color: white !important;
+        background-color: {ACCENT_PINK};
+        color: #ffffff !important;
         border: 0;
         border-radius: 14px;
         padding: 0.7rem 1rem;
         font-weight: 800;
       }}
       .stButton > button:hover {{
-        background-color: {ACCENT};
-        color: white !important;
+        background-color: {ACCENT_PURPLE};
+        color: #ffffff !important;
       }}
-
-      /* ==========================
-         FIX #2: Button text WHITE
-         ========================== */
       .stButton > button * {{
         color: #ffffff !important;
       }}
 
-      /* ---------- Inputs (keep modern rounded look) ---------- */
       div[data-baseweb="select"] > div {{
         border-radius: 14px !important;
+        background: {INPUT_BG} !important;
+        border: 1px solid {PANEL_BORDER} !important;
       }}
       .stNumberInput input {{
         border-radius: 14px !important;
+        background: {INPUT_BG} !important;
+        color: {INPUT_TEXT} !important;
+        border: 1px solid {PANEL_BORDER} !important;
       }}
       textarea {{
         border-radius: 14px !important;
+        background: {INPUT_BG} !important;
+        color: {INPUT_TEXT} !important;
+        border: 1px solid {PANEL_BORDER} !important;
+      }}
+      textarea::placeholder {{
+        color: {PLACEHOLDER} !important;
       }}
 
-      /* Make text inside dark inputs readable */
-      input, textarea {{
-        color: #ffffff !important;
+      div[data-baseweb="select"] * {{
+        color: {INPUT_TEXT} !important;
       }}
 
-      /* ==========================
-         FIX #1: Dropdown text WHITE
-         - opened dropdown list
-         - closed selected value
-         ========================== */
-
-      /* Open dropdown list */
+      div[data-baseweb="popover"] > div {{
+        background: {POPOVER_BG} !important;
+        border-radius: 14px !important;
+        border: 1px solid {PANEL_BORDER} !important;
+        box-shadow: 0 18px 55px rgba(0,0,0,0.35) !important;
+      }}
       div[data-baseweb="popover"] * {{
-        color: #ffffff !important;
+        color: {POPOVER_TEXT} !important;
       }}
       div[role="listbox"] div[role="option"],
       div[role="listbox"] div[role="option"] * {{
-        color: #ffffff !important;
+        color: {POPOVER_TEXT} !important;
       }}
 
-      /* Closed selectbox selected value */
-      div[data-baseweb="select"] > div span,
-      div[data-baseweb="select"] > div div,
-      div[data-baseweb="select"] span,
-      div[data-baseweb="select"] div {{
-        color: #ffffff !important;
+      div[role="option"]:hover {{
+        background: rgba(181,107,255,0.22) !important;
+      }}
+      div[aria-selected="true"] {{
+        background: rgba(208,15,71,0.25) !important;
       }}
 
-      /* Remove Streamlit chrome */
+      div[data-testid="stSlider"] [role="slider"] {{
+        box-shadow: 0 10px 22px rgba(208,15,71,0.28);
+      }}
+
+      /* =========================================
+         SMALL "Activate" TOGGLE (ON = Dark mode)
+         ========================================= */
+
+      #attiria_theme_activate {{
+        display: flex;
+        justify-content: flex-end;
+      }}
+
+      /* keep it compact */
+      #attiria_theme_activate [data-testid="stToggle"] {{
+        transform: scale(0.95);
+        transform-origin: right center;
+      }}
+
+      /* track */
+      #attiria_theme_activate div[role="switch"] {{
+        width: 44px !important;
+        height: 22px !important;
+        border-radius: 999px !important;
+        background: rgba(255,255,255,0.14) !important;
+        border: 1px solid {PANEL_BORDER} !important;
+        transition: all 180ms ease !important;
+        position: relative !important;
+      }}
+
+      /* knob */
+      #attiria_theme_activate div[role="switch"]::before {{
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.92);
+        box-shadow: 0 8px 18px rgba(0,0,0,0.22);
+        transition: all 180ms ease !important;
+      }}
+
+      /* ON state (pink) */
+      #attiria_theme_activate input:checked + div[role="switch"] {{
+        background: {ACCENT_PINK} !important;
+        border-color: rgba(255,255,255,0.10) !important;
+        box-shadow: 0 10px 24px rgba(208,15,71,0.18) !important;
+      }}
+
+      #attiria_theme_activate input:checked + div[role="switch"]::before {{
+        transform: translateX(22px);
+        background: #ffffff;
+      }}
+
+      /* remove chrome */
       #MainMenu {{visibility: hidden;}}
       footer {{visibility: hidden;}}
-      header {{visibility: hidden;}}
+      /* ✅ DO NOT hide header */
     </style>
     """,
     unsafe_allow_html=True,
@@ -188,7 +280,7 @@ def pretty_label(x: str, emoji_map: dict) -> str:
     text = s.replace("_", " ").title()
     return f"{emoji} {text}"
 
-# --------- Sidebar: intro + provider ----------
+# --------- Sidebar: intro + provider (UNCHANGED content) ----------
 with st.sidebar:
     st.image(os.path.join(ASSETS_DIR, "attiria_logo.jpeg"), width=140)
 
@@ -215,9 +307,30 @@ with st.sidebar:
     st.caption("Text model: " + (os.getenv("GEMINI_MODEL") or "models/gemini-1.5-flash"))
     st.caption("Image model: " + (os.getenv("GEMINI_IMAGE_MODEL") or "(disabled / quota-limited)"))
 
-# --------- Hero banner + header ----------
+# --------- Hero banner ----------
 st.image(os.path.join(ASSETS_DIR, "hero_banner.jpeg"), width="stretch")
 
+# --------- Theme Switch (TOP right): Activate (ON = dark mode) ----------
+spacer, toggle_col = st.columns([8, 2])
+with spacer:
+    pass
+with toggle_col:
+    st.markdown('<div id="attiria_theme_activate">', unsafe_allow_html=True)
+
+    is_dark = st.toggle(
+        "Dark Mode",
+        value=(MODE == "dark"),
+        key="__attiria_activate_dark__",
+    )
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    new_mode = "dark" if is_dark else "light"
+    if new_mode != MODE:
+        st.session_state["ui_mode"] = new_mode
+        st.rerun()
+
+# --------- Hero header + title ----------
 top_l, top_r = st.columns([1, 5], vertical_alignment="center")
 with top_l:
     st.image(os.path.join(ASSETS_DIR, "attiria_logo.jpeg"), width=88)
@@ -342,11 +455,10 @@ if result:
             tips = o.get("styling_tips", [])
             if tips:
                 st.markdown("**Styling tips**")
-                st.write("\n".join([f"- {t}" for t in tips]))
+                st.write("\\n".join([f"- {t}" for t in tips]))
 
             image_prompt = o.get("image_prompt", "")
 
-            # Optional image generation (may hit quota)
             if st.button(f"🖼️ Generate image for Outfit {i}", key=f"gen_img_lang_{i}", width="stretch"):
                 with st.spinner("Generating image…"):
                     try:
